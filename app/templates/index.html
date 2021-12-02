@@ -1,0 +1,32 @@
+{% extends "base.html"%}
+{% block content%}
+     {% for post in posts.items %}
+        <article class="media content-section">
+        <img class="rounded-circle"
+               src="{{ url_for('static',filename='picture/'+post.author.picture)}}"
+               alt="profile image" style=" height: 125px;
+  width: 125px;
+  margin-right: 20px;
+  margin-bottom: 16px;">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{{url_for('users.posts', username=post.author.username ,page=page_num)}}">{{ post.author.username }}</a>
+              <small class="text-muted">Posted on :{{ post.postdate.strftime('%m/%d/%Y') }}</small>
+            </div>
+            <h2><a class="article-title" href="{{url_for('posts.post', postid=post.id)}}">{{ post.title }}</a></h2>
+            <p class="article-content">{{ post.content }}</p>
+          </div>
+        </article>
+    {% endfor %}
+    {% for page_num in posts.iter_pages(left_edge=1, left_current=1, right_current=2, right_edge=1) %}
+        {% if page_num %}
+            {% if page_num == posts.page %}
+                <a href="{{url_for('main.index', page=page_num)}}" class="btn btn-info mb-4">{{page_num}}</a>
+            {% else %}
+                <a href="{{url_for('main.index', page=page_num)}}" class="btn btn-outline-info mb-4">{{page_num}}</a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+{% endblock content %}
