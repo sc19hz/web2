@@ -2,19 +2,50 @@
 {% block scripts %}
 {% endblock %}
 {% block content%}
+    {% if current_user.is_authenticated and user==current_user %}
 <legend class="border-bottom mb-4">Who do I follow</legend>
-    <table>
+   {% else %}
+    <legend class="border-bottom mb-4">The user's follow</legend>
+    {% endif %}
     {%for follow in follows%}
     {% if follow.user !=user %}
-    <tr>
-    <td>
-        <a>  {{ follow.user.username }}</a>
-    </td>
+     <article class="media follow-section">
+        <img class="rounded-circle"
+               src="{{ url_for('static',filename='picture/'+follow.user.picture)}}"
+               alt="profile image" style=" height: 45px;
+  width: 45px;
+  margin-right: 20px;
+  margin-bottom: 16px;">
+          <div class="media-body">
 
-    </tr>
+            <h2><a class="article-title" href="{{url_for('users.posts', username=follow.user.username)}}">{{ follow.user.username }}</a></h2>
+
+          </div>
+        </article>
+    {% endif %}
+    {% endfor %}
+ {% if current_user.is_authenticated and user==current_user %}
+    <legend class="border-bottom mb-4">Who follows me</legend>
+    {% else %}
+    <legend class="border-bottom mb-4">The user's followers</legend>
+    {% endif %}
+ <table>
+    {%for follow in followeds%}
+    {% if follow.user !=user %}
+    <article class="media follow-section">
+        <img class="rounded-circle"
+               src="{{ url_for('static',filename='picture/'+follow.user.picture)}}"
+               alt="profile image" style=" height: 45px;
+  width: 45px;
+  margin-right: 20px;
+  margin-bottom: 16px;">
+          <div class="media-body">
+
+            <h2><a class="article-title" href="{{url_for('users.posts', username=follow.user.username)}}">{{ follow.user.username }}</a></h2>
+
+          </div>
+        </article>
     {% endif %}
     {% endfor %}
     </table>
-    <legend class="border-bottom mb-4">Who follows me</legend>
-
 {% endblock  content%}
