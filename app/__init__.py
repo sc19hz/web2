@@ -4,13 +4,14 @@ from app.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
-
+from flask_moment import Moment
 db = SQLAlchemy()
 bc=Bcrypt()
 m_login=LoginManager()
 m_login.login_view="users.login" #function
 m_login.login_message_category="info" #color
 mail=Mail()
+moment = Moment()
 
 def create(config_class=Config):
     app=Flask(__name__)

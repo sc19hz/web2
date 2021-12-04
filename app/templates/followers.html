@@ -1,0 +1,20 @@
+{% extends"base.html"%}
+{% block scripts %}
+{% endblock %}
+{% block content%}
+<legend class="border-bottom mb-4">Who do I follow</legend>
+    <table>
+    {%for follow in follows%}
+    {% if follow.user !=user %}
+    <tr>
+    <td>
+        <a>  {{ follow.user.username }}</a>
+    </td>
+
+    </tr>
+    {% endif %}
+    {% endfor %}
+    </table>
+    <legend class="border-bottom mb-4">Who follows me</legend>
+
+{% endblock  content%}

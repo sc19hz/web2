@@ -1,11 +1,69 @@
-from app.models import Post,User
+from app.models import Post,User,Follow
 from app.users.utils import *
 from app.users.forms import F_login,F_registration,F_updateuser
 from app import bc,db
-from flask import render_template,redirect,flash,Blueprint,request
+from flask import abort, render_template,redirect,flash,Blueprint,request
 from flask_login import login_user, current_user,logout_user,login_required
+from functools import wraps
+
+
 
 users=Blueprint('users',__name__)
+
+@users.route('/follow/<username>')
+@login_required
+def follow(username):
+    user = User.query.filter_by(username=username).first()
+
+    if current_user.is_following(user):
+        flash('You are already following this user.')
+        return redirect(url_for('users.posts', username=username))
+    current_user.follow(user)
+    flash('You are now following %s.' % username)
+    return redirect(url_for('users.posts', username=username))
+
+@users.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+    user = User.query.filter_by(username=username).first()
+    print(1)
+    if current_user.is_following(user):
+        current_user.unfollow(user)
+        flash('You are now not following %s.' % username)
+    return redirect(url_for('users.posts', username=username))
+
+
+@users.route('/followers/<username>')
+def followers(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('Invalid user.')
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = user.followers.paginate(
+        page, per_page=current_app.config['FOLLOWERS_PER_PAGE'],
+        error_out=False)
+    follows = [{'user': item.follower, 'timestamp': item.timestamp}
+                for item in pagination.items]
+    return render_template('followers.html', user=user, title="Followers of",
+                            endpoint='.followers', pagination=pagination,
+                            follows=follows)
+
+@users.route('/followed_by/<username>')
+def followed_by(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('Invalid user.')
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = user.followed.paginate(
+        page, per_page=current_app.config['FOLLOWERS_PER_PAGE'],
+        error_out=False)
+    follows = [{'user': item.followed, 'timestamp': item.timestamp}
+               for item in pagination.items]
+    return render_template('followers.html', user=user, title="Followed by",
+                           endpoint='.followed_by', pagination=pagination,
+                           follows=follows)
 
 @users.route("/register",methods=['GET','POST'])
 def register():
@@ -13,7 +71,7 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     if form.validate_on_submit():
-        npwd=bc.generate_password_hash(form.password.data).decode('uft-8')
+        npwd=bc.generate_password_hash(form.password.data).decode('utf-8')
         user=User(username=form.username.data,email=form.email.data,password=npwd)
         db.session.add(user)
         db.session.commit()
@@ -68,5 +126,5 @@ def profile():
 def posts(username):
     user = User.query.filter_by(username=username).first_or_404()
     pagenumber=request.args.get('page', 1, type=int)
-    posts = Post.query.filter_by(author=user).order_by(Post.postdate.desc()).paginate(page=pagenumber, per_page=2)
+    posts = Post.query.filter_by(author=user).order_by(Post.postdate.desc()).paginate(page=pagenumber, per_page=4)
     return render_template('posts.html',user=user,posts=posts,title=f"{username}'s Blog")
