@@ -1,3 +1,7 @@
+import hashlib
+from flask import make_response
+
+import app
 from app.models import Post,User,Follow
 from app.users.utils import *
 from app.users.forms import F_login,F_registration,F_updateuser
@@ -9,6 +13,17 @@ from functools import wraps
 
 
 users=Blueprint('users',__name__)
+
+@staticmethod
+def geneAuthCode(user=None):
+    print(1)
+    m=hashlib.md5()
+    str="%s-%s-%s-%s-%s"%(user.id,user.username,user.email,user.picture,user.password)
+    m.update(str.encode("utf-8"))
+    response = make_response()
+    response.set_cookie(app.Config['AUTH_COOKIE_NAME'],"%s#s"%(m.hexdigest(),user.id))
+    return response
+
 
 @users.route('/follow/<username>')
 @login_required
@@ -74,6 +89,7 @@ def register():
 
 @users.route("/login",methods=['GET','POST'])
 def login():
+
     form=F_login()
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
