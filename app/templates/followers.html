@@ -9,7 +9,7 @@
     {% endif %}
     {%for follow in follows%}
     {% if follow.user !=user %}
-     <article class="media follow-section">
+     <article class="media follow-section" style="border: none">
         <img class="rounded-circle"
                src="{{ url_for('static',filename='picture/'+follow.user.picture)}}"
                alt="profile image" style=" height: 45px;
@@ -32,7 +32,7 @@
  <table>
     {%for follow in followeds%}
     {% if follow.user !=user %}
-    <article class="media follow-section">
+    <article class="media follow-section" style="border: none">
         <img class="rounded-circle"
                src="{{ url_for('static',filename='picture/'+follow.user.picture)}}"
                alt="profile image" style=" height: 45px;

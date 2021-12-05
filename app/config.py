@@ -9,5 +9,3 @@ class Config:
     MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
     MAIL_USERNAME = os.environ.get('EMAIL_USER')
     MAIL_SERVER = 'smtp.googlemail.com'
-    FLASKY_POSTS_PER_PAGE = 20
-    FOLLOWERS_PER_PAGE = 50
