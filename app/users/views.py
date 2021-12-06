@@ -4,7 +4,7 @@ from flask import make_response
 import app
 from app.models import Post,User,Follow
 from app.users.utils import *
-from app.users.forms import F_login,F_registration,F_updateuser
+from app.users.forms import F_login,F_registration,F_updateuser,F_reset,F_quest
 from app import bc,db
 from flask import abort, render_template,redirect,flash,Blueprint,request
 from flask_login import login_user, current_user,logout_user,login_required
@@ -16,7 +16,7 @@ users=Blueprint('users',__name__)
 
 @staticmethod
 def geneAuthCode(user=None):
-    print(1)
+
     m=hashlib.md5()
     str="%s-%s-%s-%s-%s"%(user.id,user.username,user.email,user.picture,user.password)
     m.update(str.encode("utf-8"))
@@ -137,3 +137,32 @@ def posts(username):
     pagenumber=request.args.get('page', 1, type=int)
     posts = Post.query.filter_by(author=user).order_by(Post.postdate.desc()).paginate(page=pagenumber, per_page=4)
     return render_template('posts.html',user=user,posts=posts,title=f"{username}'s Blog")
+
+# @users.route('/resetpwd',methods=['GET','POST'])
+# def req_reset():
+#     form=F_quest()
+#     if current_user.is_authenticated:
+#         return redirect(url_for('main.index'))
+#     if form.validate_on_submit():
+#         user = User.query.filter_by(email=form.email.data).first()
+#         reset_email(user)
+#         flash('An email has been sent with further instructions', 'info')
+#         return redirect(url_for('users.login'))
+#     return render_template('questreset.html', title='Reset Password',form=form)
+#
+# @users.route('resetpwd/<token>',methods=['GET', 'POST'])
+# def reset_token(token):
+#     form=F_reset()
+#     if current_user.is_authenticated:
+#         return redirect(url_for('main.index'))
+#     user = User.verify_reset_token(token)
+#     if user is None:
+#         flash('This is an invalid or expired token', 'warning')
+#         return redirect(url_for(users.reqreq_reset))
+#     if form.validate_on_submit():
+#         npwd = bc.generate_password_hash(form.password.data).decode('utf-8')
+#         user.password = npwd
+#         db.session.commit()
+#         flash(f'Your password has been updated!', 'success')
+#         return redirect(url_for('users.login'))
+#     return render_template('reset.html', title='Reset Password', form=form)

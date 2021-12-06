@@ -1,7 +1,7 @@
 from app import db,m_login
 from datetime import datetime
 from flask_login import UserMixin
-from itsdangerous import TimedJSONWebSignatureSerializer
+from itsdangerous import TimedJSONWebSignatureSerializer as Sl
 from flask import current_app
 
 class Follow(db.Model):
@@ -26,6 +26,18 @@ class User(db.Model,UserMixin):
                                 backref=db.backref('followed', lazy='joined'),
                                 lazy='dynamic',
                                 cascade='all, delete-orphan')
+
+    def get_reset_token(self, expires_sec=1800):
+        s = Sl(current_app.config['SECRET_KEY'], expires_sec)
+        return s.dumps({'user_id': self.id})
+    @staticmethod
+    def verify_reset_token(token):
+        s =Sl(current_app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get_or_404(user_id)
     def follow(self,user):
         if not self.is_following(user):
 
