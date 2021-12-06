@@ -14,6 +14,7 @@ class User(db.Model,UserMixin):
     username = db.Column(db.String(20),  nullable=False)
     email = db.Column(db.String(120), nullable=False)
     picture = db.Column(db.String(20), nullable=False, default='default.png')
+    background=db.Column(db.String(30),default='defaultbackground.png')
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)  #Post:class name
     followed = db.relationship('Follow',

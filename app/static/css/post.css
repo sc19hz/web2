@@ -2,6 +2,8 @@ body {
   background: #fafafa;
   color: #333333;
   margin-top: 5rem;
+  background-size:cover;
+  background-attachment: fixed;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -73,4 +75,7 @@ a.article-title:hover {
 
 .profile_pwdreset{
     margin-top: 10px;
+}
+.bd{
+
 }

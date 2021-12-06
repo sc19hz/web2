@@ -51,6 +51,7 @@ def unfollow(username):
 @users.route('/followers/<username>')
 def followers(username):
     user = User.query.filter_by(username=username).first()
+    background=url_for('static',filename=f'picture/{user.background}')
     if user is None:
         flash('Invalid user.')
         return redirect(url_for('.index'))
@@ -67,9 +68,9 @@ def followers(username):
                for item in pagination1.items]
     if not followeds:
         print(1)
-    return render_template('followers.html', user=user, title="Followers of",
+    return render_template('followers.html',background=background, user=user, title="Followers of",
                             endpoint='.followers', pagination=pagination,pagination1=pagination1,
-                            follows=follows,followeds=followeds)
+                            follows=follows,followeds=followeds,tag=1)
 
 
 
@@ -122,6 +123,9 @@ def profile():
         if form.picture.data:
             picturename=edit_picture(current_user.username, form.picture.data)
             current_user.picture=picturename
+        if form.background.data:
+            backgroundname = edit_background(current_user.username, form.background.data)
+            current_user.background = backgroundname
         db.session.commit()
         flash('User Profile updated successfully','success')
         return redirect(url_for('users.profile'))
@@ -129,14 +133,16 @@ def profile():
         form.username.data = current_user.username
         form.email.data = current_user.email
     picture=url_for('static',filename=f'picture/{current_user.picture}')
-    return render_template('profile.html',title='profile',picture=picture,form=form)
+    background=url_for('static',filename=f'picture/{current_user.background}')
+    return render_template('profile.html',title='profile',picture=picture,background=background,form=form,tag=2)
 
 @users.route('/user/post/<string:username>', methods=['GET', 'POST'])
 def posts(username):
     user = User.query.filter_by(username=username).first_or_404()
+    background=url_for('static',filename=f'picture/{user.background}')
     pagenumber=request.args.get('page', 1, type=int)
     posts = Post.query.filter_by(author=user).order_by(Post.postdate.desc()).paginate(page=pagenumber, per_page=4)
-    return render_template('posts.html',user=user,posts=posts,title=f"{username}'s Blog")
+    return render_template('posts.html',background=background,user=user,posts=posts,title=f"{username}'s Blog",tag=1)
 
 @users.route('/resetpwd',methods=['GET','POST'])
 def req_reset():

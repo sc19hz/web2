@@ -26,13 +26,15 @@ class F_updateuser(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     picture = FileField('Update your avatar', validators=[FileAllowed(['png', 'jpg', 'jpeg'])])
+    background = FileField('Make your own background', validators=[FileAllowed(['png', 'jpg', 'jpeg'])])
     submit = SubmitField('Update')
 
     def  validate_username(self, username):
-        if current_user.username!=username:
+        if current_user.username!=username.data:
             user = User.query.filter_by(username=username.data).first()
             if user:
                 raise ValidationError('The username has been used, please try another one.')
+
 
     def validate_email(self, email):
         if current_user.email != email.data:

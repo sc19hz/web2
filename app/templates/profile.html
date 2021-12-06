@@ -46,6 +46,15 @@
                         {% endfor %}
                     {% endif %}
                 </div>
+            <div class="form-group">
+                    {{ form.background.label() }}
+                    {{ form.background(class='form-control-file') }}
+                    {% if form.background.errors %}
+                        {% for error in form.background.errors  %}
+                            <span class="text-danger">{{ error }}</span><br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
             </fieldset>
     <div class="form-group">
                 {{ form.submit(class='btn btn-outline-info') }}
