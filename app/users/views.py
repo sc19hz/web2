@@ -138,31 +138,43 @@ def posts(username):
     posts = Post.query.filter_by(author=user).order_by(Post.postdate.desc()).paginate(page=pagenumber, per_page=4)
     return render_template('posts.html',user=user,posts=posts,title=f"{username}'s Blog")
 
-# @users.route('/resetpwd',methods=['GET','POST'])
-# def req_reset():
-#     form=F_quest()
-#     if current_user.is_authenticated:
-#         return redirect(url_for('main.index'))
-#     if form.validate_on_submit():
-#         user = User.query.filter_by(email=form.email.data).first()
-#         reset_email(user)
-#         flash('An email has been sent with further instructions', 'info')
-#         return redirect(url_for('users.login'))
-#     return render_template('questreset.html', title='Reset Password',form=form)
-#
-# @users.route('resetpwd/<token>',methods=['GET', 'POST'])
-# def reset_token(token):
-#     form=F_reset()
-#     if current_user.is_authenticated:
-#         return redirect(url_for('main.index'))
-#     user = User.verify_reset_token(token)
-#     if user is None:
-#         flash('This is an invalid or expired token', 'warning')
-#         return redirect(url_for(users.reqreq_reset))
-#     if form.validate_on_submit():
-#         npwd = bc.generate_password_hash(form.password.data).decode('utf-8')
-#         user.password = npwd
-#         db.session.commit()
-#         flash(f'Your password has been updated!', 'success')
-#         return redirect(url_for('users.login'))
-#     return render_template('reset.html', title='Reset Password', form=form)
+@users.route('/resetpwd',methods=['GET','POST'])
+def req_reset():
+    form=F_quest()
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        reset_email(user)
+        flash('An email has been sent with further instructions', 'info')
+        return redirect(url_for('users.login'))
+    return render_template('questreset.html', title='Reset Password',form=form)
+
+@users.route('/resetpwd/<token>',methods=['GET', 'POST'])
+def reset_token(token):
+    form=F_reset()
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('This is an invalid or expired token', 'warning')
+        return redirect(url_for(users.reqreq_reset))
+    if form.validate_on_submit():
+        npwd = bc.generate_password_hash(form.password.data).decode('utf-8')
+        user.password = npwd
+        db.session.commit()
+        flash(f'Your password has been updated!', 'success')
+        return redirect(url_for('users.login'))
+    return render_template('reset.html', title='Reset Password', form=form)
+
+@users.route('/pwdreset',methods=['GET','POST'])
+@login_required
+def pwdreset():
+    form=F_reset()
+    if form.validate_on_submit():
+        npwd = bc.generate_password_hash(form.password.data).decode('utf-8')
+        current_user.password = npwd
+        db.session.commit()
+        flash(f'Your password has been updated!', 'success')
+        return redirect(url_for('users.profile'))
+    return render_template('reset.html', title='Reset Password', form=form)

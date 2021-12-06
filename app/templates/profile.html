@@ -34,7 +34,9 @@
                     {% else %}
                        {{ form.email(class='form-control form-control-lg') }}
                     {% endif %}
+                <a class="form-control-label profile_pwdreset" href="{{url_for('users.pwdreset')}}">Reset password</a>
                 </div>
+
                 <div class="form-group">
                     {{ form.picture.label() }}
                     {{ form.picture(class='form-control-file') }}

@@ -71,20 +71,6 @@ a.article-title:hover {
   vertical-align: middle;
 }
 
-#shoucang{
-    background-color:#00b7ee;
-    line-height:36px;
-    width:88px;
-    text-align:center;
-    font-size:14px;
-    color:#ffffff;
-    border-radius:2px;
-    cursor:pointer;
-    }
-.yishoucang{
-    width:11px;
-    height:8px;
-    background-color: blue;
-    display:inline-block;
-    margin-right:9px;
-    }
+.profile_pwdreset{
+    margin-top: 10px;
+}

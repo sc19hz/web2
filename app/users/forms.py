@@ -49,11 +49,12 @@ class F_login(FlaskForm):
 class F_quest(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Request Password Reset')
+
     def validate_email(self, email):
-        if current_user.email != email.data:
-            user = User.query.filter_by(email=email.data).first()
-            if user:
-                raise ValidationError('The email has been used, please try another one')
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError('There is no account with this email. You have to register first.')
+
 
 class F_reset(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
