@@ -14,8 +14,11 @@
               <a class="mr-2" href="{{url_for('users.posts', username=post.author.username ,page=page_num)}}">{{ post.author.username }}</a>
               <small class="text-muted">Posted on :{{ post.postdate.strftime('%m/%d/%Y') }}</small>
             </div>
+              <div class="container">
             <h2><a class="article-title" href="{{url_for('posts.post', postid=post.id)}}">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content }}</p>
+                <a href="#{{post.id}}" class="btn btn-outline-light text-dark" data-toggle="collapse">View content</a>
+            <p id="{{ post.id }}" class="article-content collapse" style="font-size: 20px">{{ post.content }}</p>
+              </div>
           </div>
         </article>
     {% endfor %}
