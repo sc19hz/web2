@@ -4,6 +4,7 @@
     <h1 class="mb-3" >Posts by {{user.username}} ({{posts.total}})</h1>
 
  <!>
+    {% if current_user.is_authenticated%}
     {% if current_user and user != current_user %}
 {% if not current_user.is_following(user) %}
 <a href="{{ url_for('.follow', username=user.username) }}"
@@ -13,6 +14,7 @@ class="btn btn-primary">Follow</a>
 class="btn btn-default">Unfollow</a>
 {% endif %}
 {% endif %}
+   {% endif %}
 <a href="{{ url_for('.followers', username=user.username) }}">
 Followers: <span class="badge">{{ user.followers.count() }}</span>
 </a>
