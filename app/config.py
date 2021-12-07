@@ -9,3 +9,4 @@ class Config:
     MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
     MAIL_USERNAME = os.environ.get('EMAIL_USER')
     MAIL_SERVER = 'smtp.googlemail.com'
+    COMMENTS_PER_PAGE = 30

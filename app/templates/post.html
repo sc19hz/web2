@@ -10,6 +10,7 @@
       <div class="media-body">
         <div class="article-metadata">
           <a class="mr-2" href="{{url_for('users.posts', username=post.author.username ,page=page_num)}}">{{ post.author.username }}</a>
+
           <small class="text-muted">{{ post.postdate.strftime('%m/%d/%Y') }}</small>
             {% if post.author == current_user %}
                 <div>
@@ -23,6 +24,52 @@
         <p class="article-content">{{ post.content }}</p>
       </div>
     </article>
+
+    <h4 id="comments" style="color: #000;">Comments({{ post.comments.count() }})</h4>
+    {% if current_user.is_authenticated %}
+    <div class="comment-form">
+    {{ wtf.quick_form(form) }}
+    </div>
+    {% endif %}
+
+    <ul class="comments">
+    {% for comment in comments %}
+    <li class="comment  media comment-section">
+        <div class="comment-thumbnail">
+            <a href="{{ url_for('users.posts', username=comment.author.username) }}">
+
+                <img class="img-rounded rounded-circle profile-thumbnail" style=" height: 50px;
+  width: 50px;
+
+  margin-right: 20px;"  src="{{ url_for('static',filename='picture/'+comment.author.picture)}}">
+            </a>
+        </div>
+        <div class="comment-content">
+{#            <div class="comment-date">{{ moment(comment.timestamp).fromNow() }}</div>#}
+
+            <div class="comment-author">
+                <a href="{{ url_for('users.posts', username=comment.author.username) }}">{{ comment.author.username }}</a>
+                {% if post.author.username== comment.author.username%}
+                <a style="color: #0e8b8a">  (author)  </a>
+                {% endif %}
+            <small>  Comment on: {{ comment.timestamp.strftime('%m/%d/%Y') }}  </small></div>
+            <div class="comment-body" >
+                <a style="color: #000;">{{ comment.body }}</a>
+            </div>
+        </div>
+        </li>
+        <p></p>
+        <p></p>
+        <p></p>
+        {% endfor %}
+    </ul>
+
+    {% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.post', fragment='#comments', id=posts[0].id) }}
+</div>
+    {% endif %}
+
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
