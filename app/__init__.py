@@ -32,3 +32,4 @@ def create(config_class=Config):
     app.register_blueprint(posts)
     app.register_blueprint(errors)
     return app
+app=create() #this is for deploying
